@@ -1,39 +1,51 @@
 'use client'
 
+import Script from 'next/script'
 import { useRef, useState, useEffect } from 'react'
-import AMapLoader from '@amap/amap-jsapi-loader'
 
 function MapComponent() {
   const mapRef = useRef(null)
-  const [amapLoaded, setAmapLoaded] = useState(false)
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log(process.env)
-      AMapLoader.load({
-        key: process.env.NEXT_PUBLIC_GAODE_MAP_KEY as string,
-        version: '2.0',
-      }).then((AMap) => {
-        setAmapLoaded(true)
-        mapRef.current = new AMap.Map('container', {
-          // 设置地图容器id
-          viewMode: '3D', // 是否为3D地图模式
-          zoom: 5, // 初始化地图级别
-          center: [105.602725, 22.076636], // 初始化地图中心点位置
-        })
-      })
-    }
-  }, [])
+  const onSDKReady = async () => {
+    // 监听window上是否有HWMapJsSDK对象
+    await new Promise((resolve) => {
+      const timer = setInterval(() => {
+        if (window.HWMapJsSDK) {
+          clearInterval(timer)
+          resolve(null)
+        }
+      }, 100)
+    })
+
+    const mapOptions = {} as any
+    // 设置地图中心点坐标
+    mapOptions.center = { lat: 48.856613, lng: 2.352222 }
+    // 设置地图初始化缩放级别
+    mapOptions.zoom = 8
+    // 设置地图语言
+    mapOptions.language = 'ENG'
+    // 设置地图加载时使用的瓦片类型，支持vector（矢量）或raster（栅格）
+    mapOptions.sourceType = 'raster'
+    // 创建地图对象
+    const map = new window.HWMapJsSDK.HWMap(mapRef.current, mapOptions)
+  }
 
   return (
     <>
-      {
-        <div
-          id="container"
-          className="map-container"
-          style={{ height: '600px', width: '880px' }}
-        />
-      }
+      <Script
+        src={`https://mapapi.cloud.huawei.com/mapjs/v1/api/js?callback=initMap&key=${encodeURIComponent(
+          process.env.NEXT_PUBLIC_HW_MAP_KEY!
+        )}`}
+        onReady={() => {
+          onSDKReady()
+        }}
+      />
+      <div
+        ref={mapRef}
+        id="container"
+        className="map-container"
+        style={{ height: '600px', width: '880px' }}
+      />
     </>
   )
 }
