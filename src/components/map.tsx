@@ -19,7 +19,7 @@ function MapComponent() {
 
     const mapOptions = {} as any
     // 设置地图中心点坐标
-    mapOptions.center = { lat: 48.856613, lng: 2.352222 }
+    mapOptions.center = { lat: 39.904989, lng: 116.405285 }
     // 设置地图初始化缩放级别
     mapOptions.zoom = 8
     // 设置地图语言
