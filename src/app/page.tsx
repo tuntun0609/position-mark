@@ -1,16 +1,17 @@
+import { SearchInput } from '@/components/map-control/search-input'
+import { ZoomControl } from '@/components/map-control/zoom'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
 
-const MapComponent = dynamic(() => import('../components/map'), { ssr: false })
-const MapComponentSelf = dynamic(() => import('../components/map-self'), {
+const MapComponent = dynamic(() => import('../components/map-container'), {
   ssr: false,
 })
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center">
-      {/* <MapComponent /> */}
-      <MapComponentSelf />
+    <main className="h-full w-full relative">
+      <MapComponent />
+      <ZoomControl />
+      <SearchInput />
     </main>
   )
 }

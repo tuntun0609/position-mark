@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Script from 'next/script'
+import { Sidebar } from '@/components/sidebar'
+import { ClerkProvider } from '@clerk/nextjs'
+import { MapProvider } from '@/components/map-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,8 +18,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <MapProvider>
+            <div className="flex h-screen font-ding">
+              <Sidebar />
+              <div className="flex-1">{children}</div>
+            </div>
+          </MapProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
