@@ -10,7 +10,17 @@ export const addMarker = (map: L.Map, Coord: [number, number]) => {
 
   const marker = L.marker(Coord, {
     icon: markerIcon,
-  }).addTo(map)
+    contextmenu: true,
+    contextmenuInheritItems: false,
+    contextmenuItems: [
+      {
+        text: '删除',
+        callback: () => {
+          map.removeLayer(marker)
+        },
+      },
+    ],
+  } as any).addTo(map)
 
   return marker
 }
