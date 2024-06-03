@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css'
 import { useMap } from '../map-context'
 import { redirect } from 'next/navigation'
 import { useRouter } from 'next/navigation'
+import { addMarker } from '@/lib/map-utils'
 
 function MapComponent() {
   const mapRef = useRef(null)
@@ -19,7 +20,8 @@ function MapComponent() {
       const map = L.map('map', {
         attributionControl: false,
         zoomControl: false,
-      }).setView([39.904989, 116.405285], 10)
+        // }).setView([39.904989, 116.405285], 10)
+      }).setView([40.65880970378552, 109.85357825369704], 16)
 
       setMap(map)
 
@@ -37,6 +39,9 @@ function MapComponent() {
           updateWhenIdle: true, // 设置为 true 时，比例尺将在地图空闲时更新
         })
         .addTo(map)
+
+      // test
+      addMarker(map, [40.65880970378552, 109.85357825369704])
 
       return () => {
         map.remove()

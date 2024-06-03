@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { useMap } from '../map-context'
 import { Button } from '../ui/button'
 import { Search } from 'lucide-react'
+import { addMarker } from '@/lib/map-utils'
 
 export const SearchInput = () => {
   const [query, setQuery] = useState('')
@@ -32,7 +33,11 @@ export const SearchInput = () => {
   }
 
   const onClickSite = (site: any) => {
-    map?.setView([site.location.lat, site.location.lng], 23)
+    if (!map) {
+      return
+    }
+    map.setView([site.location.lat, site.location.lng], 16)
+    addMarker(map, [site.location.lat, site.location.lng])
   }
 
   return (
