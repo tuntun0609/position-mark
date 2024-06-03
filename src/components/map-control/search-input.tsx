@@ -1,17 +1,18 @@
 'use client'
 
 import { useClickAway } from 'react-use'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMap } from '../map-context'
 import { Button } from '../ui/button'
-import { Search } from 'lucide-react'
+import { Loader, Search } from 'lucide-react'
 import { addMarker } from '@/lib/map-utils'
 
-export const SearchInput = () => {
+const SearchInput = () => {
   const [query, setQuery] = useState('')
   const [siteList, setSiteList] = useState<any[]>([])
   const { map, hwService } = useMap()
   const [searchResultOpen, setSearchResultOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const ref = useRef(null)
   useClickAway(ref, () => {
     setSearchResultOpen(false)
@@ -19,17 +20,26 @@ export const SearchInput = () => {
 
   const onSearch = async () => {
     try {
-      hwService.searchByText(
-        {
-          query,
-        },
-        (result: any, status: number) => {
-          if (status !== 0) {
-            setSiteList(result.sites)
+      setLoading(true)
+      const result: any = await new Promise((resolve, reject) => {
+        hwService.searchByText(
+          {
+            query,
+          },
+          (result: any, status: number) => {
+            if (status !== 0) {
+              resolve(result)
+            } else {
+              reject(result)
+            }
           }
-        }
-      )
-    } catch (error) {}
+        )
+      })
+      setSiteList(result.sites)
+    } catch (error) {
+    } finally {
+      setLoading(false)
+    }
   }
 
   const onClickSite = (site: any) => {
@@ -73,7 +83,11 @@ export const SearchInput = () => {
         <span className="absolute inset-y-0 end-0 grid w-10 place-content-center">
           <Button variant="outline" className="p-0 w-8 h-8" onClick={onSearch}>
             <span className="sr-only">Search</span>
-            <Search className="w-4 h-4" />
+            {loading ? (
+              <Loader className="animate-spin w-4 h-4" />
+            ) : (
+              <Search className="w-4 h-4" />
+            )}
           </Button>
         </span>
       </div>
@@ -91,33 +105,8 @@ export const SearchInput = () => {
           </div>
         </div>
       )}
-      {/* <Command className="w-96" shouldFilter={false}>
-        <CommandInput
-          value={query}
-          onValueChange={(search) => {
-            setQuery(search)
-          }}
-          onSearch={onSearch}
-          placeholder="请输入想要查询的地址"
-        />
-        <CommandList>
-          {siteList.map((site) => (
-            <CommandItem
-              className="h-10 overflow-hidden whitespace-nowrap text-sm"
-              key={site.siteId}
-              value={site.siteId}
-              onSelect={() => {
-                map?.setView(
-                  [site.viewport.northeast.lat, site.viewport.northeast.lng],
-                  16
-                )
-              }}>
-              {site.formatAddress}
-              <FontAwesomeIcon icon={faLocationDot} />
-            </CommandItem>
-          ))}
-        </CommandList>
-      </Command> */}
     </div>
   )
 }
+
+export default SearchInput

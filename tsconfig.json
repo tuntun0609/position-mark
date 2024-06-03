@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.d.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/components/map-container/zoom-smooth.js"
   ],
   "exclude": ["node_modules"]
 }

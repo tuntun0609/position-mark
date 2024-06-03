@@ -9,6 +9,8 @@ import { redirect } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { addMarker } from '@/lib/map-utils'
 
+import './zoom-smooth'
+
 function MapComponent() {
   const mapRef = useRef(null)
   const router = useRouter()
@@ -20,8 +22,11 @@ function MapComponent() {
       const map = L.map('map', {
         attributionControl: false,
         zoomControl: false,
+        scrollWheelZoom: false,
+        smoothWheelZoom: true,
+        smoothSensitivity: 1.8,
         // }).setView([39.904989, 116.405285], 10)
-      }).setView([40.65880970378552, 109.85357825369704], 16)
+      } as any).setView([40.65880970378552, 109.85357825369704], 16)
 
       setMap(map)
 
