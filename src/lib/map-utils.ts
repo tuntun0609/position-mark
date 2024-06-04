@@ -19,6 +19,12 @@ export const addMarker = (map: L.Map, Coord: [number, number]) => {
           map.removeLayer(marker)
         },
       },
+      {
+        text: 'log',
+        callback: () => {
+          console.log(marker)
+        },
+      },
     ],
   } as any).addTo(map)
 

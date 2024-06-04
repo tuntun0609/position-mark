@@ -1,3 +1,4 @@
+import { Toolbar } from '@/components/map-control/tool-bar'
 import { ZoomControl } from '@/components/map-control/zoom'
 import dynamic from 'next/dynamic'
 
@@ -17,6 +18,7 @@ export default function Home() {
       <MapComponent />
       <ZoomControl />
       <SearchInput />
+      <Toolbar />
     </main>
   )
 }

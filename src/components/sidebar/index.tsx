@@ -11,6 +11,7 @@ import {
 } from '@clerk/nextjs'
 import { Loader } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { TestBtn } from './test-btn'
 
 export const Sidebar = () => {
   return (
@@ -23,12 +24,13 @@ export const Sidebar = () => {
         className="my-8"
       />
       <nav className="flex-1 flex flex-col justify-between mb-8">
-        <ul className="text-sm flex flex-col items-center gap-1">
-          <li className="flex flex-col items-center gap-1 cursor-pointer">
-            <Image src="/icons/menu.svg" alt="menu" width={28} height={28} />
-            <span className="text-blue-500">菜单</span>
-          </li>
-        </ul>
+        <div className="flex flex-col item-center gap-2">
+          <Button variant="ghost" className="flex flex-col w-full h-14">
+            <Image src="/icons/menu.svg" alt="menu" width={24} height={24} />
+            <span className="text-blue-500 text-xs">菜单</span>
+          </Button>
+          <TestBtn />
+        </div>
         <div>
           <ClerkLoading>
             <Loader className="animate-spin" />

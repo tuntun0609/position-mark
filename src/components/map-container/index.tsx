@@ -8,6 +8,12 @@ import { useMap } from '../map-context'
 import { useRouter } from 'next/navigation'
 import { addMarker } from '@/lib/map-utils'
 
+import {
+  TerraDraw,
+  TerraDrawLeafletAdapter,
+  TerraDrawFreehandMode,
+} from 'terra-draw'
+
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
 import './zoom-smooth'
@@ -15,7 +21,7 @@ import './zoom-smooth'
 function MapComponent() {
   const mapRef = useRef(null)
   const router = useRouter()
-  const { setMap, setHwService } = useMap()
+  const { setMap, setHwService, setDraw } = useMap()
   const loadTimer = useRef<number>()
 
   useEffect(() => {
@@ -29,6 +35,16 @@ function MapComponent() {
         contextmenu: true,
         contextmenuWidth: 180,
         contextmenuItems: [
+          {
+            text: '添加标记',
+            callback: ({
+              latlng,
+            }: {
+              latlng: { lat: number; lng: number }
+            }) => {
+              addMarker(map, [latlng.lat, latlng.lng])
+            },
+          },
           {
             text: '显示坐标',
             callback: ({
@@ -82,6 +98,17 @@ function MapComponent() {
           updateWhenIdle: true, // 设置为 true 时，比例尺将在地图空闲时更新
         })
         .addTo(map)
+
+      // draw
+      const draw = new TerraDraw({
+        adapter: new TerraDrawLeafletAdapter({
+          lib: L,
+          map,
+        }),
+        modes: [new TerraDrawFreehandMode()],
+      })
+
+      setDraw(draw)
 
       // test
       addMarker(map, [40.65880970378552, 109.85357825369704])
