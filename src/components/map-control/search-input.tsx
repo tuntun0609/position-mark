@@ -21,10 +21,13 @@ const SearchInput = () => {
   const onSearch = async () => {
     try {
       setLoading(true)
+      const centerLatLng = map?.getCenter()
+      console.log(centerLatLng)
       const result: any = await new Promise((resolve, reject) => {
         hwService.searchByText(
           {
             query,
+            location: centerLatLng,
           },
           (result: any, status: number) => {
             if (status !== 0) {
