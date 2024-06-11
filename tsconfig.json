@@ -27,7 +27,8 @@
     "**/*.tsx",
     "**/*.d.ts",
     ".next/types/**/*.ts",
-    "src/components/map-container/zoom-smooth.js"
+    "src/components/map-container/zoom-smooth.js",
+    "node_modules/@genman-io/leaflet-geoman-free/dist/leaflet-geoman.d.ts"
   ],
   "exclude": ["node_modules"]
 }

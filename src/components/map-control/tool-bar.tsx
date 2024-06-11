@@ -2,12 +2,25 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Hand } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useMap } from '../map-context'
 
 export const Toolbar = () => {
   const [selectedTool, setSelectedTool] = useState('hand')
   const { map } = useMap()
+
+  const onPmCreate = useCallback(() => {
+    setSelectedTool('hand')
+  }, [])
+
+  useEffect(() => {
+    map?.on('pm:create', onPmCreate)
+
+    return () => {
+      map?.off('pm:create', onPmCreate)
+    }
+  }, [map])
+
   return (
     <div className="h-10 absolute top-2 z-[9999] left-[416px] p-1 bg-white rounded-sm border flex items-center">
       <ToggleGroup
