@@ -3,10 +3,11 @@
 import Script from 'next/script'
 import { useRef, useEffect } from 'react'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { useMap } from '../map-context'
 import { useRouter } from 'next/navigation'
 import { addMarker } from '@/lib/map-utils'
+import '@geoman-io/leaflet-geoman-free'
+import 'leaflet/dist/leaflet.css'
 
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
@@ -23,6 +24,7 @@ function MapComponent() {
       const map = L.map('map', {
         attributionControl: false,
         zoomControl: false,
+        zoomSnap: 0.1,
         scrollWheelZoom: false,
         smoothWheelZoom: true,
         smoothSensitivity: 1.8,
