@@ -2,12 +2,13 @@
 
 import Script from 'next/script'
 import { useRef, useEffect } from 'react'
-import L from 'leaflet'
+import L, { Layer, LeafletMouseEventHandlerFn } from 'leaflet'
 import { useMap } from '../map-context'
 import { useRouter } from 'next/navigation'
 import { addMarker } from '@/lib/map-utils'
 import '@geoman-io/leaflet-geoman-free'
 import 'leaflet/dist/leaflet.css'
+import './leaflet-geoman.css'
 
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
@@ -79,6 +80,17 @@ function MapComponent() {
       } as any).setView([40.65880970378552, 109.85357825369704], 16)
 
       setMap(map)
+
+      const onMapClick: LeafletMouseEventHandlerFn = (e) => {
+        var clickedElement = null
+
+        e.target.eachLayer((layer: Layer) => {
+          console.log(layer)
+        })
+      }
+
+      // 绑定点击事件
+      map.on('click', onMapClick)
 
       L.tileLayer(
         `https://mapapi.cloud.huawei.com/mapApi/v1/mapService/getTile?x={x}&y={y}&z={z}&language=zh&scale=2&key=${encodeURIComponent(
