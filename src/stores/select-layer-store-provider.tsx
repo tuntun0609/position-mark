@@ -19,12 +19,14 @@ export interface SelectedLayerProviderProps {
   children: ReactNode
 }
 
+export const selectedLayerStore = createSelectedLayerStore()
+
 export const SelectedLayerProvider = ({
   children,
 }: SelectedLayerProviderProps) => {
   const storeRef = useRef<SelectedLayerStoreApi>()
   if (!storeRef.current) {
-    storeRef.current = createSelectedLayerStore()
+    storeRef.current = selectedLayerStore
   }
 
   return (

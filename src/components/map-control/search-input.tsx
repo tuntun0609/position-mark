@@ -6,6 +6,7 @@ import { useMap } from '../map-context'
 import { Button } from '../ui/button'
 import { Loader, Search } from 'lucide-react'
 import { addMarker } from '@/lib/map-utils'
+import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
 const SearchInput = () => {
   const [query, setQuery] = useState('')
@@ -13,6 +14,7 @@ const SearchInput = () => {
   const { map, hwService } = useMap()
   const [searchResultOpen, setSearchResultOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const { setSelectedLayer } = useSelectedLayerStore((state) => state)
   const ref = useRef(null)
   useClickAway(ref, () => {
     setSearchResultOpen(false)
@@ -50,7 +52,7 @@ const SearchInput = () => {
       return
     }
     map.setView([site.location.lat, site.location.lng], 16)
-    addMarker(map, [site.location.lat, site.location.lng])
+    const marker = addMarker(map, [site.location.lat, site.location.lng])
   }
 
   return (

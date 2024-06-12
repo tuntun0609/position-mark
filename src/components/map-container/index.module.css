@@ -1,0 +1,4 @@
+.dragging :global(.marker-icon) {
+	display: none;
+
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import Script from 'next/script'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import L, { Layer, LeafletMouseEventHandlerFn } from 'leaflet'
 import { useMap } from '../map-context'
 import { useRouter } from 'next/navigation'
@@ -15,11 +15,15 @@ import './context-menu.css'
 import './zoom-smooth'
 import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
+import styles from './index.module.css'
+import { cn } from '@/lib/utils'
+
 function MapComponent() {
   const router = useRouter()
   const { setMap, setHwService } = useMap()
   const loadTimer = useRef<number>()
   const { setSelectedLayer } = useSelectedLayerStore((state) => state)
+  const [isDragging, setIsDragging] = useState(false)
 
   useEffect(() => {
     const map = L.map('map', {
@@ -77,7 +81,7 @@ function MapComponent() {
     tileLayer.addTo(map)
 
     map.on('click', () => {
-      const layers = map.pm.getGeomanDrawLayers()
+      const layers = map.pm.getGeomanLayers()
       layers.forEach((layer: any) => {
         layer.pm.disable()
         layer.pm.disableLayerDrag()
@@ -90,7 +94,7 @@ function MapComponent() {
         L.DomEvent.stopPropagation(e)
         if (!map.pm.globalDrawModeEnabled()) {
           // 单选layer
-          const allLayers = map.pm.getGeomanDrawLayers()
+          const allLayers = map.pm.getGeomanLayers()
           allLayers.forEach((layer: any) => {
             layer.pm.disable()
             layer.pm.disableLayerDrag()
@@ -101,6 +105,14 @@ function MapComponent() {
           })
           setSelectedLayer(e.target)
         }
+      })
+
+      e.layer.on('pm:drag', () => {
+        setIsDragging(true)
+      })
+
+      e.layer.on('pm:dragend', () => {
+        setIsDragging(false)
       })
     })
 
@@ -114,7 +126,7 @@ function MapComponent() {
       .addTo(map)
 
     // test
-    addMarker(map, [40.65880970378552, 109.85357825369704])
+    const testMarker = addMarker(map, [40.65880970378552, 109.85357825369704])
 
     return () => {
       map.remove()
@@ -146,7 +158,9 @@ function MapComponent() {
           router.push('/script-error')
         }}
       />
-      <div id="map" className="h-full w-full" />
+      <div className={cn('h-full w-full', isDragging && styles.dragging)}>
+        <div id="map" className={cn('h-full w-full')} />
+      </div>
     </>
   )
 }

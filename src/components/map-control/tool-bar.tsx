@@ -29,7 +29,6 @@ export const Toolbar = () => {
         onValueChange={(value) => {
           if (value) {
             setSelectedTool(value)
-            console.log(value)
 
             if (value === 'polyline') {
               map?.pm.enableDraw('Line', {
@@ -59,7 +58,7 @@ export const Toolbar = () => {
             height={20}
           />
         </ToggleGroupItem>
-        <ToggleGroupItem className="h-8" value="rectangle">
+        <ToggleGroupItem className="h-8 px-2" value="rectangle">
           <Image
             src="/icons/rectangle.svg"
             alt="rectangle"
@@ -67,9 +66,9 @@ export const Toolbar = () => {
             height={20}
           />
         </ToggleGroupItem>
-        <ToggleGroupItem className="h-8" value="c">
+        {/* <ToggleGroupItem className="h-8 px-2" value="c">
           C
-        </ToggleGroupItem>
+        </ToggleGroupItem> */}
       </ToggleGroup>
     </div>
   )
