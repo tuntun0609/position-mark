@@ -27,6 +27,7 @@ function MapComponent() {
 
   useEffect(() => {
     const map = L.map('map', {
+      doubleClickZoom: false,
       attributionControl: false,
       zoomControl: false,
       zoomSnap: 0.1,
