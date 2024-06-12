@@ -2,11 +2,11 @@ import { Layer } from 'leaflet'
 import { createStore } from 'zustand/vanilla'
 
 export type SelectedLayerState = {
-  selectedLayer?: Layer
+  selectedLayer?: Layer | null
 }
 
 export type SelectedLayerActions = {
-  setSelectedLayer: (layer: Layer) => void
+  setSelectedLayer: (layer: Layer | null) => void
 }
 
 export type SelectedLayerStore = SelectedLayerState & SelectedLayerActions
@@ -18,6 +18,7 @@ export const createSelectedLayerStore = (
 ) => {
   return createStore<SelectedLayerStore>()((set) => ({
     ...initState,
-    setSelectedLayer: (layer: Layer) => set(() => ({ selectedLayer: layer })),
+    setSelectedLayer: (layer: Layer | null) =>
+      set(() => ({ selectedLayer: layer })),
   }))
 }

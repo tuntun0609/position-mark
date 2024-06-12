@@ -13,11 +13,13 @@ import './leaflet-geoman.css'
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
 import './zoom-smooth'
+import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
 function MapComponent() {
   const router = useRouter()
   const { setMap, setHwService } = useMap()
   const loadTimer = useRef<number>()
+  const { setSelectedLayer } = useSelectedLayerStore((state) => state)
 
   useEffect(() => {
     const map = L.map('map', {
@@ -78,16 +80,26 @@ function MapComponent() {
       const layers = map.pm.getGeomanDrawLayers()
       layers.forEach((layer: any) => {
         layer.pm.disable()
+        layer.pm.disableLayerDrag()
       })
+      setSelectedLayer(null)
     })
 
     map.on('pm:create', (e) => {
       e.layer.on('click', (e) => {
         L.DomEvent.stopPropagation(e)
         if (!map.pm.globalDrawModeEnabled()) {
+          // 单选layer
+          const allLayers = map.pm.getGeomanDrawLayers()
+          allLayers.forEach((layer: any) => {
+            layer.pm.disable()
+            layer.pm.disableLayerDrag()
+          })
+          e.target.pm.enableLayerDrag()
           e.target.pm.enable({
             allowSelfIntersection: false,
           })
+          setSelectedLayer(e.target)
         }
       })
     })

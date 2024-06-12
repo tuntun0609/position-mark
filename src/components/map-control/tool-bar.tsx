@@ -40,12 +40,10 @@ export const Toolbar = () => {
             if (value === 'hand') {
               map?.pm.disableDraw()
             }
-            if (value === 'b') {
-              // 输出line
-              map?.eachLayer((layer) => {
-                if (layer instanceof L.Polyline) {
-                  console.log(layer.toGeoJSON())
-                }
+            if (value === 'rectangle') {
+              map?.pm.enableDraw('Rectangle', {
+                snappable: true,
+                snapDistance: 20,
               })
             }
           }
@@ -54,10 +52,20 @@ export const Toolbar = () => {
           <Hand className="w-4" />
         </ToggleGroupItem>
         <ToggleGroupItem className="h-8 px-2" value="polyline">
-          <Image src="/icons/polyline.svg" alt="menu" width={16} height={20} />
+          <Image
+            src="/icons/polyline.svg"
+            alt="polyline"
+            width={16}
+            height={20}
+          />
         </ToggleGroupItem>
-        <ToggleGroupItem className="h-8" value="b">
-          B
+        <ToggleGroupItem className="h-8" value="rectangle">
+          <Image
+            src="/icons/rectangle.svg"
+            alt="rectangle"
+            width={16}
+            height={20}
+          />
         </ToggleGroupItem>
         <ToggleGroupItem className="h-8" value="c">
           C
