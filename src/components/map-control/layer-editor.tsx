@@ -34,6 +34,10 @@ const LayerEditor = () => {
         }
         setLayerType(LayerType.Rectangle)
       } else if (selectedLayer instanceof L.Polyline) {
+        const color = selectedLayer.options.color
+        if (color) {
+          setColor(color)
+        }
         setLayerType(LayerType.Polyline)
       }
     }
@@ -70,6 +74,14 @@ const LayerEditor = () => {
                       selectedLayer instanceof L.Rectangle
                     ) {
                       selectedLayer.setStyle({ color })
+                      selectedLayer.pm.disable()
+                      selectedLayer.pm.disableLayerDrag()
+                      setTimeout(() => {
+                        selectedLayer.pm.enableLayerDrag()
+                        selectedLayer.pm.enable({
+                          allowSelfIntersection: false,
+                        })
+                      })
                     }
                   }}
                 />

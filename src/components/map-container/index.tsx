@@ -81,6 +81,8 @@ function MapComponent() {
     )
     tileLayer.addTo(map)
 
+    map.pm.setLang('zh')
+
     map.on('click', () => {
       const layers = map.pm.getGeomanLayers()
       layers.forEach((layer: any) => {
@@ -91,7 +93,8 @@ function MapComponent() {
     })
 
     map.on('pm:create', (e) => {
-      e.layer.on('click', (e) => {
+      const addLayer = e.layer as L.Path
+      addLayer.on('click', (e) => {
         L.DomEvent.stopPropagation(e)
         if (!map.pm.globalDrawModeEnabled()) {
           // 单选layer
@@ -108,12 +111,25 @@ function MapComponent() {
         }
       })
 
-      e.layer.on('pm:drag', () => {
+      addLayer.on('pm:drag', () => {
         setIsDragging(true)
       })
 
-      e.layer.on('pm:dragend', () => {
+      addLayer.on('pm:dragend', () => {
         setIsDragging(false)
+      })
+
+      addLayer.bindContextMenu({
+        contextmenu: true,
+        contextmenuInheritItems: false,
+        contextmenuItems: [
+          {
+            text: '删除',
+            callback: () => {
+              map.removeLayer(addLayer)
+            },
+          },
+        ],
       })
     })
 
