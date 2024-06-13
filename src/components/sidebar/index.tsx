@@ -12,6 +12,7 @@ import {
 import { Loader } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { TestBtn } from './test-btn'
+import Link from 'next/link'
 
 export const Sidebar = () => {
   return (
@@ -29,9 +30,8 @@ export const Sidebar = () => {
             <Image src="/icons/menu.svg" alt="menu" width={24} height={24} />
             <span className="text-blue-500 text-xs">菜单</span>
           </Button>
-          <TestBtn />
         </div>
-        <div>
+        <div className="flex justify-center items-center">
           <ClerkLoading>
             <Loader className="animate-spin" />
           </ClerkLoading>
@@ -40,11 +40,11 @@ export const Sidebar = () => {
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <SignInButton>
+              <Link href="/sign-in">
                 <Button className="w-full px-2" variant="outline">
                   登录
                 </Button>
-              </SignInButton>
+              </Link>
             </SignedOut>
           </ClerkLoaded>
         </div>

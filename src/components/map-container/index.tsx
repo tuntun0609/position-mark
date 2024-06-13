@@ -131,6 +131,10 @@ function MapComponent() {
           },
         ],
       })
+
+      addLayer.on('remove', () => {
+        setSelectedLayer(null)
+      })
     })
 
     L.control

@@ -13,6 +13,34 @@ export const Toolbar = () => {
     setSelectedTool('hand')
   }, [])
 
+  const onSelectTool = (value: string) => {
+    if (value) {
+      setSelectedTool(value)
+
+      if (value === 'polyline') {
+        map?.pm.enableDraw('Line', {
+          snappable: true,
+          snapDistance: 20,
+        })
+      }
+      if (value === 'hand') {
+        map?.pm.disableDraw()
+      }
+      if (value === 'rectangle') {
+        map?.pm.enableDraw('Rectangle', {
+          snappable: true,
+          snapDistance: 20,
+        })
+      }
+      if (value === 'polygon') {
+        map?.pm.enableDraw('Polygon', {
+          snappable: true,
+          snapDistance: 20,
+        })
+      }
+    }
+  }
+
   useEffect(() => {
     map?.on('pm:create', onPmCreate)
 
@@ -26,27 +54,7 @@ export const Toolbar = () => {
       <ToggleGroup
         type="single"
         value={selectedTool}
-        onValueChange={(value) => {
-          if (value) {
-            setSelectedTool(value)
-
-            if (value === 'polyline') {
-              map?.pm.enableDraw('Line', {
-                snappable: true,
-                snapDistance: 20,
-              })
-            }
-            if (value === 'hand') {
-              map?.pm.disableDraw()
-            }
-            if (value === 'rectangle') {
-              map?.pm.enableDraw('Rectangle', {
-                snappable: true,
-                snapDistance: 20,
-              })
-            }
-          }
-        }}>
+        onValueChange={onSelectTool}>
         <ToggleGroupItem className="h-8 px-2" value="hand">
           <Hand className="w-4" />
         </ToggleGroupItem>
@@ -66,9 +74,14 @@ export const Toolbar = () => {
             height={20}
           />
         </ToggleGroupItem>
-        {/* <ToggleGroupItem className="h-8 px-2" value="c">
-          C
-        </ToggleGroupItem> */}
+        <ToggleGroupItem className="h-8 px-2" value="polygon">
+          <Image
+            src="/icons/polygon.svg"
+            alt="polygon"
+            width={24}
+            height={24}
+          />
+        </ToggleGroupItem>
       </ToggleGroup>
     </div>
   )
