@@ -20,12 +20,6 @@ export const addMarker = (map: L.Map, Coord: [number, number]) => {
           map.removeLayer(marker)
         },
       },
-      {
-        text: 'log',
-        callback: () => {
-          console.log(marker)
-        },
-      },
     ],
   } as any).addTo(map)
 
@@ -41,8 +35,15 @@ export const addMarker = (map: L.Map, Coord: [number, number]) => {
       e.target.pm.enableLayerDrag()
       e.target.pm.enable({
         allowSelfIntersection: false,
+        preventMarkerRemoval: true,
       })
       selectedLayerStore.setState({ selectedLayer: e.target })
+    }
+  })
+
+  marker.on('remove', () => {
+    if (selectedLayerStore.getState().selectedLayer === marker) {
+      selectedLayerStore.setState({ selectedLayer: null })
     }
   })
 

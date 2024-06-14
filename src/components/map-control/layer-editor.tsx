@@ -65,15 +65,15 @@ const PolylineEditor = (props: { layer: L.Polyline }) => {
   }, [layer])
 
   return (
-    <div className="p-2 pt-4 flex flex-col w-full gap-4">
+    <div className="p-2 pt-4 flex flex-col w-full gap-6">
       <div className="colorPicker">
-        <p className="mb-1 font-bold">颜色:</p>
+        <p className="mb-2 font-bold">颜色:</p>
         <div className="flex justify-center item-center">
           <ColorPicker value={color} onChange={onColorChange} />
         </div>
       </div>
       <div className="opacity">
-        <p className="mb-1 font-bold">透明度: {opacity / 100}</p>
+        <p className="mb-2 font-bold">透明度: {opacity / 100}</p>
         <Slider
           defaultValue={[100]}
           max={100}
@@ -84,7 +84,7 @@ const PolylineEditor = (props: { layer: L.Polyline }) => {
         />
       </div>
       <div className="width">
-        <p className="mb-1 font-bold">宽度: {width}</p>
+        <p className="mb-2 font-bold">宽度: {width}</p>
         <Slider
           defaultValue={[100]}
           max={20}
@@ -177,15 +177,15 @@ const PolygonEditor = (props: { layer: L.Rectangle | L.Polygon }) => {
   }, [layer])
 
   return (
-    <div className="p-2 pt-4 flex flex-col w-full gap-4">
+    <div className="p-2 pt-4 flex flex-col w-full gap-6">
       <div className="colorPicker">
-        <p className="mb-1 font-bold">颜色:</p>
+        <p className="mb-2 font-bold">颜色:</p>
         <div className="flex justify-center item-center">
           <ColorPicker value={color} onChange={onColorChange} />
         </div>
       </div>
       <div className="opacity">
-        <p className="mb-1 font-bold">边框透明度: {opacity / 100}</p>
+        <p className="mb-2 font-bold">边框透明度: {opacity / 100}</p>
         <Slider
           defaultValue={[100]}
           max={100}
@@ -196,7 +196,7 @@ const PolygonEditor = (props: { layer: L.Rectangle | L.Polygon }) => {
         />
       </div>
       <div className="width">
-        <p className="mb-1 font-bold">边框宽度: {width}</p>
+        <p className="mb-2 font-bold">边框宽度: {width}</p>
         <Slider
           defaultValue={[100]}
           max={20}
@@ -208,13 +208,13 @@ const PolygonEditor = (props: { layer: L.Rectangle | L.Polygon }) => {
         />
       </div>
       <div className="colorPicker">
-        <p className="mb-1 font-bold">填充颜色:</p>
+        <p className="mb-2 font-bold">填充颜色:</p>
         <div className="flex justify-center item-center">
           <ColorPicker value={fillColor} onChange={onFillColorChange} />
         </div>
       </div>
       <div className="fillOpacity">
-        <p className="mb-1 font-bold">填充透明度: {fillOpacity / 100}</p>
+        <p className="mb-2 font-bold">填充透明度: {fillOpacity / 100}</p>
         <Slider
           defaultValue={[100]}
           max={100}
@@ -234,23 +234,24 @@ const LayerEditor = () => {
   const [layerType, setLayerType] = useState<LayerType>()
 
   useEffect(() => {
+    if (isNil(selectedLayer)) {
+      return
+    }
     setShowEditor(true)
-    if (!isNil(selectedLayer)) {
-      if (selectedLayer instanceof L.Marker) {
-        setLayerType(LayerType.Marker)
-      } else if (selectedLayer instanceof L.Rectangle) {
-        setLayerType(LayerType.Rectangle)
-      } else if (selectedLayer instanceof L.Polygon) {
-        setLayerType(LayerType.Polygon)
-      } else if (selectedLayer instanceof L.Polyline) {
-        setLayerType(LayerType.Polyline)
-      }
+    if (selectedLayer instanceof L.Marker) {
+      setLayerType(LayerType.Marker)
+    } else if (selectedLayer instanceof L.Rectangle) {
+      setLayerType(LayerType.Rectangle)
+    } else if (selectedLayer instanceof L.Polygon) {
+      setLayerType(LayerType.Polygon)
+    } else if (selectedLayer instanceof L.Polyline) {
+      setLayerType(LayerType.Polyline)
     }
   }, [selectedLayer])
 
   return (
     <div
-      className="fixed top-2 right-2 z-[99999] ease-in 
+      className="fixed top-2 right-2 z-[9999] ease-in 
     transition">
       {!isNil(selectedLayer) &&
         (showEditor ? (

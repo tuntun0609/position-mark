@@ -17,12 +17,16 @@ import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
 import styles from './index.module.css'
 import { cn } from '@/lib/utils'
+import { useLatest } from 'react-use'
 
 function MapComponent() {
   const router = useRouter()
   const { setMap, setHwService } = useMap()
   const loadTimer = useRef<number>()
-  const { setSelectedLayer } = useSelectedLayerStore((state) => state)
+  const { selectedLayer, setSelectedLayer } = useSelectedLayerStore(
+    (state) => state
+  )
+  const selectedLayerLatest = useLatest(selectedLayer)
   const [isDragging, setIsDragging] = useState(false)
 
   useEffect(() => {
@@ -40,7 +44,7 @@ function MapComponent() {
         {
           text: '添加标记',
           callback: ({ latlng }: { latlng: { lat: number; lng: number } }) => {
-            addMarker(map, [latlng.lat, latlng.lng])
+            const marker = addMarker(map, [latlng.lat, latlng.lng])
           },
         },
         {
@@ -133,7 +137,9 @@ function MapComponent() {
       })
 
       addLayer.on('remove', () => {
-        setSelectedLayer(null)
+        if (selectedLayerLatest.current === addLayer) {
+          setSelectedLayer(null)
+        }
       })
     })
 
@@ -176,7 +182,7 @@ function MapComponent() {
         )}`}
         onError={() => {
           clearInterval(loadTimer.current)
-          router.push('/script-error')
+          router.push('/map/script-error')
         }}
       />
       <div className={cn('h-full w-full', isDragging && styles.dragging)}>
