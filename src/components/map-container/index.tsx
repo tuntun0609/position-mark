@@ -13,6 +13,7 @@ import './leaflet-geoman.css'
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
 import './zoom-smooth'
+import './custom-value'
 import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
 import styles from './index.module.css'

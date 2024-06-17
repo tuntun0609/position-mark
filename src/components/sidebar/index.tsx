@@ -11,7 +11,6 @@ import {
 } from '@clerk/nextjs'
 import { Loader } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { TestBtn } from './test-btn'
 import Link from 'next/link'
 
 export const Sidebar = () => {

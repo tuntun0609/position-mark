@@ -8,6 +8,12 @@ declare module 'leaflet' {
       contextmenuItems?: any[]
       contextmenuInheritItems?: boolean
     }) => void
+
+    _customData: Record<string, any>
+
+    setValue: (key: string, value: any) => void
+
+    getValue: (key: string) => any
   }
 
   interface MapOptions {
