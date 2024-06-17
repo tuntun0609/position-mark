@@ -9,6 +9,7 @@ import { addMarker } from '@/lib/map-utils'
 import '@geoman-io/leaflet-geoman-free'
 import 'leaflet/dist/leaflet.css'
 import './leaflet-geoman.css'
+import { v4 as uuid } from 'uuid'
 
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
@@ -99,6 +100,7 @@ function MapComponent() {
 
     map.on('pm:create', (e) => {
       const addLayer = e.layer as L.Path
+      addLayer.setValue('id', uuid())
       addLayer.on('click', (e) => {
         L.DomEvent.stopPropagation(e)
         if (!map.pm.globalDrawModeEnabled()) {
