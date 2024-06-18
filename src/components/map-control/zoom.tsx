@@ -1,7 +1,7 @@
 'use client'
 
 import { ZoomIn, ZoomOut } from 'lucide-react'
-import { useMap } from '../map-context'
+import { useMap } from '../map-provider'
 
 export const ZoomControl = () => {
   const { map } = useMap()

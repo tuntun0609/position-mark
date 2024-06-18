@@ -1,6 +1,6 @@
 'use client'
 
-import { useMap } from '@/components/map-context'
+import { useMap } from '@/components/map-provider'
 import { Button } from '../ui/button'
 import Image from 'next/image'
 

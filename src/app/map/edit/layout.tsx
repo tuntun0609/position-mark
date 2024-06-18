@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { MapProvider } from '@/components/map-context'
+import { MapProvider } from '@/components/map-provider'
 
 export const metadata: Metadata = {
   title: 'Position Marker | Map Edit',

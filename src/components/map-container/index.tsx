@@ -3,7 +3,7 @@
 import Script from 'next/script'
 import { useRef, useEffect, useState } from 'react'
 import L, { Layer, LeafletMouseEventHandlerFn } from 'leaflet'
-import { useMap } from '../map-context'
+import { useMap } from '../map-provider'
 import { useRouter } from 'next/navigation'
 import { addMarker } from '@/lib/map-utils'
 import '@geoman-io/leaflet-geoman-free'

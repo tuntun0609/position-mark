@@ -2,7 +2,7 @@
 
 import { useClickAway } from 'react-use'
 import { useEffect, useRef, useState } from 'react'
-import { useMap } from '../map-context'
+import { useMap } from '../map-provider'
 import { Button } from '../ui/button'
 import { Loader, Search } from 'lucide-react'
 import { addMarker } from '@/lib/map-utils'

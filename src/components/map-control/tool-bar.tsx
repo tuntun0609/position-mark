@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useMap } from '../map-context'
+import { useMap } from '../map-provider'
 import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
 export const Toolbar = () => {
