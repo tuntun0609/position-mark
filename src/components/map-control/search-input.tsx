@@ -86,7 +86,7 @@ const SearchInput = () => {
         />
 
         <span className="absolute inset-y-0 end-0 grid w-10 place-content-center">
-          <Button variant="outline" className="p-0 w-8 h-8" onClick={onSearch}>
+          <Button variant="ghost" className="p-0 w-8 h-8" onClick={onSearch}>
             <span className="sr-only">Search</span>
             {loading ? (
               <Loader className="animate-spin w-4 h-4" />

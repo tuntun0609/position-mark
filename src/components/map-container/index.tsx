@@ -148,10 +148,10 @@ function MapComponent() {
 
     L.control
       .scale({
-        position: 'bottomleft', // 设置比例尺的位置，可选值有 'bottomleft', 'bottomright', 'topleft', 'topright'
+        position: 'bottomright', // 设置比例尺的位置，可选值有 'bottomleft', 'bottomright', 'topleft', 'topright'
         imperial: false, // 显示英制单位
         metric: true, // 显示公制单位
-        updateWhenIdle: true, // 设置为 true 时，比例尺将在地图空闲时更新
+        // updateWhenIdle: true,  设置为 true 时，比例尺将在地图空闲时更新
       })
       .addTo(map)
 
@@ -164,6 +164,7 @@ function MapComponent() {
   }, [])
 
   useEffect(() => {
+    setSelectedLayer(null)
     ;(async () => {
       await new Promise((resolve) => {
         loadTimer.current = window.setInterval(() => {
