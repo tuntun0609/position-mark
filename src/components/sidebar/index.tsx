@@ -36,7 +36,7 @@ export const Sidebar = () => {
           </ClerkLoading>
           <ClerkLoaded>
             <SignedIn>
-              <UserButton />
+              <UserButton afterSignOutUrl="/sign-in" />
             </SignedIn>
             <SignedOut>
               <Link href="/sign-in">

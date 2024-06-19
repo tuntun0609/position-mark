@@ -158,6 +158,8 @@ function MapComponent() {
     // test
     const testMarker = addMarker(map, [40.65880970378552, 109.85357825369704])
 
+    addMarker(map, [40.66670092705389, 109.84070524949709])
+
     return () => {
       map.remove()
     }

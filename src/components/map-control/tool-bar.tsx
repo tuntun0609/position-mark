@@ -11,12 +11,13 @@ import {
 } from '@/components/ui/tooltip'
 import { useMap } from '../map-provider'
 import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
+import { useRoutePath } from '../route-path-provider'
 
 export const Toolbar = () => {
   const [selectedTool, setSelectedTool] = useState('hand')
   const { map } = useMap()
   const { setSelectedLayer } = useSelectedLayerStore((state) => state)
-  const [isSelectRoutePoint, setIsSelectRoutePoint] = useState(false)
+  const { setIsSelectRoutePoint, isSelectRoutePoint } = useRoutePath()
 
   const onPmCreate = useCallback(() => {
     setSelectedTool('hand')
@@ -27,28 +28,28 @@ export const Toolbar = () => {
       setSelectedTool(value)
       setSelectedLayer(null)
 
+      if (value !== 'routePath' && isSelectRoutePoint) {
+        setIsSelectRoutePoint(false)
+      }
+
       if (value === 'polyline') {
         map?.pm.enableDraw('Line', {
           snappable: true,
           snapDistance: 20,
         })
-      }
-      if (value === 'hand') {
+      } else if (value === 'hand') {
         map?.pm.disableDraw()
-      }
-      if (value === 'rectangle') {
+      } else if (value === 'rectangle') {
         map?.pm.enableDraw('Rectangle', {
           snappable: true,
           snapDistance: 20,
         })
-      }
-      if (value === 'polygon') {
+      } else if (value === 'polygon') {
         map?.pm.enableDraw('Polygon', {
           snappable: true,
           snapDistance: 20,
         })
-      }
-      if (value === 'routePath') {
+      } else if (value === 'routePath') {
         map?.pm.disableDraw()
         setIsSelectRoutePoint(true)
       }

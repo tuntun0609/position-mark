@@ -24,7 +24,6 @@ const SearchInput = () => {
     try {
       setLoading(true)
       const centerLatLng = map?.getCenter()
-      console.log(centerLatLng)
       const result: any = await new Promise((resolve, reject) => {
         hwService.searchByText(
           {
@@ -52,6 +51,7 @@ const SearchInput = () => {
       return
     }
     map.setView([site.location.lat, site.location.lng], 16)
+    console.log(site, [site.location.lat, site.location.lng])
     const marker = addMarker(map, [site.location.lat, site.location.lng])
   }
 
