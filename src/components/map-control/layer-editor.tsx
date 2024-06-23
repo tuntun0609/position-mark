@@ -2,7 +2,7 @@
 
 import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 import { Button } from '../ui/button'
-import { X } from 'lucide-react'
+import { Bike, CarFront, CircleAlert, Footprints, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { isNil } from 'lodash-es'
 import { Card } from '../ui/card'
@@ -10,6 +10,9 @@ import Image from 'next/image'
 import { ColorPicker } from '../color-picker'
 import { Slider } from '../ui/slider'
 import { cn } from '@/lib/utils'
+import { Input } from '../ui/input'
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
+import { RouteType } from '@/types'
 
 export enum LayerType {
   Marker = 'marker',
@@ -23,10 +26,15 @@ const PolylineEditor = (props: { layer: L.Polyline }) => {
   const [color, setColor] = useState<string>('#000000')
   const [opacity, setOpacity] = useState<number>(100)
   const [width, setWidth] = useState<number>(3)
+  const [isRoutePath, setIsRoutePath] = useState<boolean>(false)
+  const [routeType, setRouteType] = useState<RouteType>()
 
   const onColorChange = (color: string) => {
     setColor(color)
     layer.setStyle({ color })
+    if (isRoutePath) {
+      return
+    }
     layer.pm.disable()
     layer.pm.disableLayerDrag()
     setTimeout(() => {
@@ -49,7 +57,43 @@ const PolylineEditor = (props: { layer: L.Polyline }) => {
     layer?.setStyle({ weight })
   }
 
+  const onRouteTypeChange = async (value: RouteType) => {
+    setRouteType(value)
+    layer.setValue('routeType', value)
+    // 获取路径数组
+    const latlngs = layer.getLatLngs()
+    const origin = latlngs[0] as L.LatLng
+    const destination = latlngs[latlngs.length - 1] as L.LatLng
+    const data = await fetch('/api/map/route', {
+      method: 'POST',
+      body: JSON.stringify({
+        origin: [origin.lng, origin.lat],
+        destination: [destination.lng, destination.lat],
+        type: value,
+      }),
+    })
+    const result = await data.json()
+    const paths: {
+      lng: number
+      lat: number
+    }[] = []
+    result.result.forEach((route: any) => {
+      route.paths.forEach((path: any) => {
+        path.steps.forEach((step: any) => {
+          paths.push(...step.polyline)
+        })
+      })
+    })
+    paths.unshift(origin)
+    paths.push(destination)
+    layer.setLatLngs(paths)
+  }
+
   useEffect(() => {
+    if (layer.getValue('type') === 'route') {
+      setIsRoutePath(true)
+      setRouteType(layer.getValue('routeType'))
+    }
     const color = layer.options.color
     const opacity = layer.options.opacity
     const weight = layer.options.weight
@@ -95,6 +139,38 @@ const PolylineEditor = (props: { layer: L.Polyline }) => {
           onValueChange={onWidthChange}
         />
       </div>
+
+      {isRoutePath && (
+        <div className="routeType">
+          <div>
+            <Tabs
+              value={routeType}
+              defaultValue={RouteType.Walking}
+              onValueChange={(value) => onRouteTypeChange(value as RouteType)}>
+              <TabsList className="w-full">
+                <TabsTrigger
+                  className="flex-1 flex items-center gap-2"
+                  value={RouteType.Walking}>
+                  <Footprints size={20} />
+                  步行
+                </TabsTrigger>
+                <TabsTrigger
+                  className="flex-1 flex items-center gap-2"
+                  value={RouteType.Bicycling}>
+                  <Bike size={20} />
+                  骑行
+                </TabsTrigger>
+                <TabsTrigger
+                  className="flex-1 flex items-center gap-2"
+                  value={RouteType.Driving}>
+                  <CarFront size={20} />
+                  驾车
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -228,6 +304,45 @@ const PolygonEditor = (props: { layer: L.Rectangle | L.Polygon }) => {
   )
 }
 
+const MarkerEditor = (props: { layer: L.Marker }) => {
+  const { layer } = props
+  const [topTipContent, setTopTipContent] = useState<string>('')
+
+  useEffect(() => {
+    const _topTipContent = layer.getTooltip()?.getContent() ?? ''
+    setTopTipContent(_topTipContent as string)
+  }, [layer])
+
+  useEffect(() => {
+    if (topTipContent) {
+      layer
+        .bindTooltip(topTipContent, {
+          direction: 'top',
+          offset: [0, -44],
+        })
+        .openTooltip()
+    }
+  }, [topTipContent])
+
+  return (
+    <div className="p-2 pt-4 flex flex-col w-full gap-6">
+      <div>
+        <p className="mb-2 font-bold flex items-center gap-2">
+          <CircleAlert className="text-primary" size={14} />
+          标记文本:
+        </p>
+        <Input
+          value={topTipContent}
+          onChange={(e) => {
+            setTopTipContent(e.target.value)
+          }}
+          placeholder="标记文本"
+        />
+      </div>
+    </div>
+  )
+}
+
 const LayerEditor = () => {
   const [showEditor, setShowEditor] = useState(false)
   const { selectedLayer } = useSelectedLayerStore((state) => state)
@@ -273,6 +388,9 @@ const LayerEditor = () => {
             {(layerType === LayerType.Rectangle ||
               layerType === LayerType.Polygon) && (
               <PolygonEditor layer={selectedLayer as L.Rectangle | L.Polygon} />
+            )}
+            {layerType === LayerType.Marker && (
+              <MarkerEditor layer={selectedLayer as L.Marker} />
             )}
           </Card>
         ) : (

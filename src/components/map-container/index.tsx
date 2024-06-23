@@ -15,11 +15,13 @@ import 'leaflet-contextmenu/dist/leaflet.contextmenu.min'
 import './context-menu.css'
 import './zoom-smooth'
 import './custom-value'
+import 'leaflet-polylinedecorator'
 import { useSelectedLayerStore } from '@/stores/select-layer-store-provider'
 
 import styles from './index.module.css'
 import { cn } from '@/lib/utils'
 import { useLatest } from 'react-use'
+import { useRoutePath } from '../route-path-provider'
 
 function MapComponent() {
   const router = useRouter()
@@ -30,6 +32,94 @@ function MapComponent() {
   )
   const selectedLayerLatest = useLatest(selectedLayer)
   const [isDragging, setIsDragging] = useState(false)
+  const { isSelectRoutePoint, setSelectedRoutePoint, selectedRoutePoint } =
+    useRoutePath()
+  const isSelectRoutePointLatest = useLatest(isSelectRoutePoint)
+
+  const addPathEvent = (map: L.Map, layer: Layer) => {
+    layer.setValue('id', uuid())
+    layer.on('click', (e) => {
+      L.DomEvent.stopPropagation(e)
+      if (isSelectRoutePointLatest.current) {
+        return
+      }
+      if (!map.pm.globalDrawModeEnabled()) {
+        // 单选layer
+        const allLayers = map.pm.getGeomanLayers()
+        allLayers.forEach((layer: any) => {
+          layer.pm.disable()
+          layer.pm.disableLayerDrag()
+        })
+        e.target.pm.enableLayerDrag()
+        e.target.pm.enable({
+          allowSelfIntersection: false,
+        })
+        setSelectedLayer(e.target)
+      }
+    })
+
+    layer.on('pm:drag', () => {
+      setIsDragging(true)
+    })
+
+    layer.on('pm:dragend', () => {
+      setIsDragging(false)
+    })
+
+    layer.bindContextMenu({
+      contextmenu: true,
+      contextmenuInheritItems: false,
+      contextmenuItems: [
+        {
+          text: '删除',
+          callback: () => {
+            map.removeLayer(layer)
+          },
+        },
+      ],
+    })
+
+    layer.on('remove', () => {
+      if (selectedLayerLatest.current === layer) {
+        setSelectedLayer(null)
+      }
+    })
+  }
+
+  const addMarkerEvent = (map: L.Map, marker: L.Marker) => {
+    marker.on('click', (e) => {
+      L.DomEvent.stopPropagation(e)
+      if (isSelectRoutePointLatest.current) {
+        setSelectedRoutePoint((preValue) => {
+          if (preValue.length < 2 && !preValue.includes(marker)) {
+            return [...preValue, marker]
+          }
+          return preValue
+        })
+        return
+      }
+      if (!map.pm.globalDrawModeEnabled()) {
+        // 单选layer
+        const allLayers = map.pm.getGeomanLayers()
+        allLayers.forEach((layer: any) => {
+          layer.pm.disable()
+          layer.pm.disableLayerDrag()
+        })
+        e.target.pm.enableLayerDrag()
+        e.target.pm.enable({
+          allowSelfIntersection: false,
+          preventMarkerRemoval: true,
+        })
+        setSelectedLayer(e.target)
+      }
+    })
+
+    marker.on('remove', () => {
+      if (selectedLayerLatest.current === marker) {
+        setSelectedLayer(null)
+      }
+    })
+  }
 
   useEffect(() => {
     const map = L.map('map', {
@@ -47,6 +137,7 @@ function MapComponent() {
           text: '添加标记',
           callback: ({ latlng }: { latlng: { lat: number; lng: number } }) => {
             const marker = addMarker(map, [latlng.lat, latlng.lng])
+            addMarkerEvent(map, marker)
           },
         },
         {
@@ -100,50 +191,7 @@ function MapComponent() {
 
     map.on('pm:create', (e) => {
       const addLayer = e.layer as L.Path
-      addLayer.setValue('id', uuid())
-      addLayer.on('click', (e) => {
-        L.DomEvent.stopPropagation(e)
-        if (!map.pm.globalDrawModeEnabled()) {
-          // 单选layer
-          const allLayers = map.pm.getGeomanLayers()
-          allLayers.forEach((layer: any) => {
-            layer.pm.disable()
-            layer.pm.disableLayerDrag()
-          })
-          e.target.pm.enableLayerDrag()
-          e.target.pm.enable({
-            allowSelfIntersection: false,
-          })
-          setSelectedLayer(e.target)
-        }
-      })
-
-      addLayer.on('pm:drag', () => {
-        setIsDragging(true)
-      })
-
-      addLayer.on('pm:dragend', () => {
-        setIsDragging(false)
-      })
-
-      addLayer.bindContextMenu({
-        contextmenu: true,
-        contextmenuInheritItems: false,
-        contextmenuItems: [
-          {
-            text: '删除',
-            callback: () => {
-              map.removeLayer(addLayer)
-            },
-          },
-        ],
-      })
-
-      addLayer.on('remove', () => {
-        if (selectedLayerLatest.current === addLayer) {
-          setSelectedLayer(null)
-        }
-      })
+      addPathEvent(map, addLayer)
     })
 
     L.control
@@ -157,8 +205,9 @@ function MapComponent() {
 
     // test
     const testMarker = addMarker(map, [40.65880970378552, 109.85357825369704])
+    addMarkerEvent(map, testMarker)
 
-    addMarker(map, [40.66670092705389, 109.84070524949709])
+    addMarkerEvent(map, addMarker(map, [40.66670092705389, 109.84070524949709]))
 
     return () => {
       map.remove()

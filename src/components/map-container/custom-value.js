@@ -11,12 +11,12 @@ L.Layer.addInitHook(function () {
 			console.error('key must be an string')
 			return this
 		}
-		this._customData.key = value
+		this._customData[key] = value
 		return this
 	},
 
 		// 方法：获取自定义对象
 		this.getValue = function (key) {
-			return this._customData.key
+			return this._customData[key]
 		}
 })

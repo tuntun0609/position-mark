@@ -16,6 +16,17 @@ declare module 'leaflet' {
     getValue: (key: string) => any
   }
 
+  interface Symbol {
+    arrowHead: (options: {
+      pixelSize: number
+      pathOptions: { color: string }
+    }) => void
+  }
+
+  interface PolylineDecorator {
+    patterns: any[]
+  }
+
   interface MapOptions {
     smoothWheelZoom?: boolean
     smoothSensitivity?: number
