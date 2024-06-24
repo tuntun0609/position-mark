@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import { Input } from '../ui/input'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import { RouteType } from '@/types'
+import { renderToString } from 'react-dom/server'
 
 export enum LayerType {
   Marker = 'marker',
@@ -318,7 +319,6 @@ const MarkerEditor = (props: { layer: L.Marker }) => {
       layer
         .bindTooltip(topTipContent, {
           direction: 'top',
-          offset: [0, -44],
         })
         .openTooltip()
     }
